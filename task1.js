@@ -1,26 +1,21 @@
-function shuffleString(s, indices) {
-    let shuffled = new Array(s.length);
-
-    for (let i = 0; i < s.length; i++) {
-        shuffled[indices[i]] = s[i];
+function isPalindrome(s) {
+    return recursionHelper(s, 0, s.length - 1);
+}
+function recursionHelper(s, start, end) {
+       
+    if (start >= end) {
+        return true;
     }
 
-    return shuffled.join('');
+    if (s[start] !== s[end]) {
+        return false;
+    }
+    return recursionHelper(s, start + 1, end - 1);
 }
-
-
-let s1 = "mamacode";
-let indices1 = [4, 5, 6, 7, 0, 1, 2, 3];
-console.log(shuffleString(s1, indices1)); 
-
-
-let s2 = "dosta";
-let indices2 = [4,0,1,2,3];
-console.log(shuffleString(s2, indices2)); 
-
-let s3 = "abc";
-let indices3 = [1,0,2];
-console.log(shuffleString(s3, indices3)); 
+// Example usage
+console.log(isPalindrome("madam")); // Output: true
+console.log(isPalindrome("adam"));  // Output: false
+console.log(isPalindrome("tenet")); // Output: true
 
 // Time Complexity: O(n) where n is the length of s
 // Space Complexity: O(n) where n is the length of s
