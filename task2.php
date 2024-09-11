@@ -1,45 +1,28 @@
 <?php
 
-function merge(&$nums1, $m, $nums2, $n) {
-    $i = $m - 1; 
-    $j = $n - 1;
-    $k = $m + $n - 1;
+function findMin($nums) {
+    $left = 0;
+    $right = count($nums) - 1;
 
-    while ($i >= 0 && $j >= 0) {
-        if ($nums1[$i] > $nums2[$j]) {
-            $nums1[$k--] = $nums1[$i--];
+    while ($left < $right) {
+        $mid = (int)(($left + $right) / 2);
+
+        if ($nums[$mid] > $nums[$right]) {
+            $left = $mid + 1;
         } else {
-            $nums1[$k--] = $nums2[$j--];
+            $right = $mid;
         }
     }
 
-    while ($j >= 0) {
-        $nums1[$k--] = $nums2[$j--];
-    }
+    return $nums[$left];
 }
 
 
-$nums1 = [1, 2, 3, 0, 0, 0];
-$m = 3;
-$nums2 = [2, 5, 6];
-$n = 3;
-merge($nums1, $m, $nums2, $n);
-print_r($nums1);
-
-$nums1 = [1];
-$m = 1;
-$nums2 = [];
-$n = 0;
-merge($nums1, $m, $nums2, $n);
-print_r($nums1);
-
-$nums1 = [0];
-$m = 0;
-$nums2 = [1];
-$n = 1;
-merge($nums1, $m, $nums2, $n);
-print_r($nums1);
-
-
-//T ime Complexity: O(m + n)
-// Space Complexity: O(1)
+$nums1 = [3, 4, 5, 1, 2];
+echo findMin($nums1);
+echo "\n";
+$nums2 = [4, 5, 6, 7, 0, 1, 2];
+echo findMin($nums2);
+echo "\n";
+$nums3 = [11, 13, 15, 17];
+echo findMin($nums3); 
