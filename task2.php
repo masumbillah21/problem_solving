@@ -1,28 +1,68 @@
 <?php
 
-function findMin($nums) {
-    $left = 0;
-    $right = count($nums) - 1;
+class TreeNode {
+    public $val;
+    public $left;
+    public $right;
 
-    while ($left < $right) {
-        $mid = (int)(($left + $right) / 2);
+    function __construct($val = 0, $left = null, $right = null) {
+        $this->val = $val;
+        $this->left = $left;
+        $this->right = $right;
+    }
+}
 
-        if ($nums[$mid] > $nums[$right]) {
-            $left = $mid + 1;
-        } else {
-            $right = $mid;
+function searchBST($root, $val) {
+    if ($root === null) {
+        return null;
+    }
+
+    if ($root->val === $val) {
+        return $root;
+    }
+
+    if ($val < $root->val) {
+        return searchBST($root->left, $val);
+    } else {
+        return searchBST($root->right, $val);
+    }
+}
+
+function treeToArray($root) {
+    if ($root === null) {
+        return [];
+    }
+
+    $result = [];
+    $queue = [$root];
+
+    while (!empty($queue)) {
+        $node = array_shift($queue);
+        if ($node !== null) {
+            $result[] = $node->val;
+            $queue[] = $node->left;
+            $queue[] = $node->right;
         }
     }
 
-    return $nums[$left];
+    return $result;
 }
 
+// Example usage
+$root = new TreeNode(4);
+$root->left = new TreeNode(2);
+$root->right = new TreeNode(7);
+$root->left->left = new TreeNode(1);
+$root->left->right = new TreeNode(3);
 
-$nums1 = [3, 4, 5, 1, 2];
-echo findMin($nums1);
-echo "\n";
-$nums2 = [4, 5, 6, 7, 0, 1, 2];
-echo findMin($nums2);
-echo "\n";
-$nums3 = [11, 13, 15, 17];
-echo findMin($nums3); 
+$val = 2;
+$subtree = searchBST($root, $val);
+$output = treeToArray($subtree);
+
+print_r($output);
+
+$val = 5;
+$subtree = searchBST($root, $val);
+$output = treeToArray($subtree);
+
+print_r($output);
