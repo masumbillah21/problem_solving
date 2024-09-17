@@ -66,3 +66,6 @@ $subtree = searchBST($root, $val);
 $output = treeToArray($subtree);
 
 print_r($output);
+
+// Time complexity: O(h) (h = height of the tree)
+// Space complexity: O(h)

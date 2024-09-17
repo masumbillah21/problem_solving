@@ -33,3 +33,7 @@ $root1 = new TreeNode(1);
 $root1->right = new TreeNode(2);
 
 echo treeHeight($root1);
+
+
+// Time Complexity : O(n)
+// Space Complexity : O(h) (h = height of the tree)
