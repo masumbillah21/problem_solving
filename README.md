@@ -1,1 +1,1 @@
-# Assignment on Tree
+# Assignment on Greedy algorithms

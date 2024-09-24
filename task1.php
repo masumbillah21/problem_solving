@@ -1,39 +1,37 @@
 <?php
-class TreeNode {
-    public $val;
-    public $left;
-    public $right;
 
-    function __construct($val = 0, $left = null, $right = null) {
-        $this->val = $val;
-        $this->left = $left;
-        $this->right = $right;
+function maximumUnits($boxTypes, $truckSize) {
+    usort($boxTypes, function($a, $b) {
+        return $b[1] - $a[1];
+    });
+    
+    $totalUnits = 0;
+    
+    foreach ($boxTypes as $box) {
+        list($numberOfBoxes, $unitsPerBox) = $box;
+        
+        if ($truckSize <= 0) {
+            break;
+        }
+        
+        $boxesToTake = min($numberOfBoxes, $truckSize);
+        
+        $totalUnits += $boxesToTake * $unitsPerBox;
+        
+        $truckSize -= $boxesToTake;
     }
+    
+    return $totalUnits;
 }
 
-function treeHeight($root) {
-    if ($root === null) {
-        return 0;
-    }
-    $leftHeight = treeHeight($root->left);
-    $rightHeight = treeHeight($root->right);
+$boxTypes1 = [[1, 3], [2, 2], [3, 1]];
+$truckSize1 = 4;
+echo maximumUnits($boxTypes1, $truckSize1) . "\n";
 
-    return max($leftHeight, $rightHeight) + 1;
-}
+$boxTypes2 = [[5, 10], [2, 5], [4, 7], [3, 9]];
+$truckSize2 = 10;
+echo maximumUnits($boxTypes2, $truckSize2) . "\n";
 
 
-$root = new TreeNode(3);
-$root->left = new TreeNode(9);
-$root->right = new TreeNode(20);
-$root->right->left = new TreeNode(15);
-$root->right->right = new TreeNode(7);
-echo treeHeight($root) . "\n";
-
-$root1 = new TreeNode(1);
-$root1->right = new TreeNode(2);
-
-echo treeHeight($root1);
-
-
-// Time Complexity : O(n)
-// Space Complexity : O(h) (h = height of the tree)
+// Time complexity: O(nlogn)
+// Space complexity: O(1) (O(n) used by the sorting algorithm in the worst case)
