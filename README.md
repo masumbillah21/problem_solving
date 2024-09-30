@@ -1,1 +1,1 @@
-# Assignment on Greedy algorithms
+# Assignment on Backtracking

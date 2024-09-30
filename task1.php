@@ -1,37 +1,34 @@
 <?php
 
-function maximumUnits($boxTypes, $truckSize) {
-    usort($boxTypes, function($a, $b) {
-        return $b[1] - $a[1];
-    });
-    
-    $totalUnits = 0;
-    
-    foreach ($boxTypes as $box) {
-        list($numberOfBoxes, $unitsPerBox) = $box;
-        
-        if ($truckSize <= 0) {
-            break;
+function permute($str) {
+    $result = [];
+    $arr = str_split($str);
+
+    function backtrack(&$arr, $start, &$result) {
+        if ($start === count($arr)) {
+            $result[] = implode('', $arr); 
+            return;
         }
-        
-        $boxesToTake = min($numberOfBoxes, $truckSize);
-        
-        $totalUnits += $boxesToTake * $unitsPerBox;
-        
-        $truckSize -= $boxesToTake;
+        for ($i = $start; $i < count($arr); $i++) {
+            swap($arr, $start, $i);
+            backtrack($arr, $start + 1, $result);
+            swap($arr, $start, $i);
+        }
     }
-    
-    return $totalUnits;
+
+    function swap(&$arr, $i, $j) {
+        $temp = $arr[$i];
+        $arr[$i] = $arr[$j];
+        $arr[$j] = $temp;
+    }
+
+    backtrack($arr, 0, $result);
+    return $result;
 }
 
-$boxTypes1 = [[1, 3], [2, 2], [3, 1]];
-$truckSize1 = 4;
-echo maximumUnits($boxTypes1, $truckSize1) . "\n";
+print_r(permute("abc"));
 
-$boxTypes2 = [[5, 10], [2, 5], [4, 7], [3, 9]];
-$truckSize2 = 10;
-echo maximumUnits($boxTypes2, $truckSize2) . "\n";
+//print_r(permute("xy"));
 
-
-// Time complexity: O(nlogn)
-// Space complexity: O(1) (O(n) used by the sorting algorithm in the worst case)
+// Time Complexity: O(n!)
+// Space Complexity: O(n) for the recursion stack, and O(n!) for the resulting array of permutations.
