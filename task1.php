@@ -1,34 +1,54 @@
 <?php
+function validPath($n, $edges, $source, $destination) {
 
-function permute($str) {
-    $result = [];
-    $arr = str_split($str);
+    $graph = array_fill(0, $n, []);
+    
+    foreach ($edges as $edge) {
+        [$u, $v] = $edge;
+        $graph[$u][] = $v;
+        $graph[$v][] = $u;
+    }
 
-    function backtrack(&$arr, $start, &$result) {
-        if ($start === count($arr)) {
-            $result[] = implode('', $arr); 
-            return;
-        }
-        for ($i = $start; $i < count($arr); $i++) {
-            swap($arr, $start, $i);
-            backtrack($arr, $start + 1, $result);
-            swap($arr, $start, $i);
+    if ($source === $destination) {
+        return true;
+    }
+
+    $queue = [$source];
+    $visited = array_fill(0, $n, false);
+    $visited[$source] = true;
+
+    while (!empty($queue)) {
+        $current = array_shift($queue);
+        
+        foreach ($graph[$current] as $neighbor) {
+            if (!$visited[$neighbor]) {
+
+                if ($neighbor === $destination) {
+                    return true;
+                }
+                $visited[$neighbor] = true;
+                $queue[] = $neighbor;
+            }
         }
     }
 
-    function swap(&$arr, $i, $j) {
-        $temp = $arr[$i];
-        $arr[$i] = $arr[$j];
-        $arr[$j] = $temp;
-    }
-
-    backtrack($arr, 0, $result);
-    return $result;
+    return false;
 }
 
-print_r(permute("abc"));
+$n = 3;
+$edges = [[0, 1], [1, 2], [2, 0]];
+$source = 0;
+$destination = 2;
 
-//print_r(permute("xy"));
+$result = validPath($n, $edges, $source, $destination);
+echo $result ? 'true' : 'false';
 
-// Time Complexity: O(n!)
-// Space Complexity: O(n) for the recursion stack, and O(n!) for the resulting array of permutations.
+echo "\n";
+
+$n = 6;
+$edges = [[0,1],[0,2],[3,5],[5,4],[4,3]];
+$source = 0;
+$destination = 5;
+
+$result = validPath($n, $edges, $source, $destination);
+echo $result ? 'true' : 'false';

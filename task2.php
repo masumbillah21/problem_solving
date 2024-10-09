@@ -1,49 +1,55 @@
 <?php
-
-function isPath($matrix) {
-    $N = count($matrix);
-
-    function isSafe($x, $y, $N, $matrix) {
-        return $x >= 0 && $x < $N && $y >= 0 && $y < $N && $matrix[$x][$y] === 1;
+function countConnectedComponents($A, $B) {
+    $graph = [];
+    for ($i = 0; $i < count($B); $i++) {
+        $u = $B[$i][0];
+        $v = $B[$i][1];
+        if (!isset($graph[$u])) {
+            $graph[$u] = [];
+        }
+        if (!isset($graph[$v])) {
+            $graph[$v] = [];
+        }
+        $graph[$u][] = $v;
+        $graph[$v][] = $u;
     }
 
-    function backtrack($x, $y, $N, &$matrix) {
-        if ($x === $N - 1 && $y === $N - 1) {
-            return true;
-        }
+    $visited = array_fill(1, $A, false);
+    $connectedComponents = 0;
 
-        $directions = [[1, 0], [-1, 0], [0, 1], [0, -1]];
-        foreach ($directions as $dir) {
-            $new_x = $x + $dir[0];
-            $new_y = $y + $dir[1];
-            if (isSafe($new_x, $new_y, $N, $matrix)) {
-                $matrix[$new_x][$new_y] = -1;
-                if (backtrack($new_x, $new_y, $N, $matrix)) {
-                    return true;
+    function dfs($node, &$visited, $graph) {
+        $stack = [$node];
+        while (!empty($stack)) {
+            $curr = array_pop($stack);
+            if (isset($graph[$curr])) {
+                foreach ($graph[$curr] as $neighbor) {
+                    if (!$visited[$neighbor]) {
+                        $visited[$neighbor] = true;
+                        $stack[] = $neighbor;
+                    }
                 }
-                $matrix[$new_x][$new_y] = 1;
             }
         }
-        return false;
     }
 
-    if ($matrix[0][0] === 0) { 
-        return false;
+    for ($i = 1; $i <= $A; $i++) {
+        if (!$visited[$i]) { 
+            $connectedComponents++;
+            $visited[$i] = true;
+            dfs($i, $visited, $graph);
+        }
     }
 
-    return backtrack(0, 0, $N, $matrix);
+    return $connectedComponents;
 }
 
-
-$matrix1 = [
-    [1, 0, 0, 0],
-    [1, 1, 0, 1],
-    [1, 1, 0, 0],
-    [0, 1, 1, 1]
-];
-var_dump(isPath($matrix1));
+$A1 = 4;
+$B1 = [[1, 2], [2, 3]];
+echo countConnectedComponents($A1, $B1) . "\n";
 
 
 
-// Time Complexity: O(4^(N^2)), where N is the dimension of the grid.
-// Space Complexity: O(N^2) for the recursion stack in the worst case.
+
+
+// Time Complexity: O(A+∣B∣) where A is the number of nodes and ∣B∣ is the number of edges. This is because we visit each node and each edge once.
+// Space Complexity: O(A+∣B∣) due to the adjacency list representation and the visited list. In the worst case, we could have all nodes and edges represented in our structures.
