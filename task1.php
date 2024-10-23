@@ -1,54 +1,48 @@
 <?php
-function validPath($n, $edges, $source, $destination) {
 
-    $graph = array_fill(0, $n, []);
-    
-    foreach ($edges as $edge) {
-        [$u, $v] = $edge;
-        $graph[$u][] = $v;
-        $graph[$v][] = $u;
+function hasCycle($A, $B) {
+    $graph = array_fill(1, $A, []);
+    foreach ($B as $edge) {
+        $graph[$edge[0]][] = $edge[1];
     }
 
-    if ($source === $destination) {
-        return true;
-    }
+    $visited = array_fill(1, $A, false);
+    $inRecStack = array_fill(1, $A, false);
 
-    $queue = [$source];
-    $visited = array_fill(0, $n, false);
-    $visited[$source] = true;
-
-    while (!empty($queue)) {
-        $current = array_shift($queue);
-        
-        foreach ($graph[$current] as $neighbor) {
-            if (!$visited[$neighbor]) {
-
-                if ($neighbor === $destination) {
-                    return true;
-                }
-                $visited[$neighbor] = true;
-                $queue[] = $neighbor;
+    for ($i = 1; $i <= $A; $i++) {
+        if (!$visited[$i]) {
+            if (dfs($graph, $i, $visited, $inRecStack)) {
+                return 1;
             }
         }
     }
 
+    return 0;
+}
+
+function dfs($graph, $node, &$visited, &$inRecStack) {
+    $visited[$node] = true;
+    $inRecStack[$node] = true;
+
+    foreach ($graph[$node] as $neighbor) {
+        if (!$visited[$neighbor]) {
+            if (dfs($graph, $neighbor, $visited, $inRecStack)) {
+                return true;
+            }
+        } elseif ($inRecStack[$neighbor]) {
+            return true;
+        }
+    }
+
+    $inRecStack[$node] = false;
     return false;
 }
 
-$n = 3;
-$edges = [[0, 1], [1, 2], [2, 0]];
-$source = 0;
-$destination = 2;
 
-$result = validPath($n, $edges, $source, $destination);
-echo $result ? 'true' : 'false';
-
+$A = 5;
+$B = [[1, 2], [4, 1], [2, 4], [3, 4], [5, 2], [1, 3]];
+echo hasCycle($A, $B);
 echo "\n";
-
-$n = 6;
-$edges = [[0,1],[0,2],[3,5],[5,4],[4,3]];
-$source = 0;
-$destination = 5;
-
-$result = validPath($n, $edges, $source, $destination);
-echo $result ? 'true' : 'false';
+$A = 5;
+$B = [ [1, 2], [2, 3], [3, 4], [4, 5] ];
+echo hasCycle($A, $B);

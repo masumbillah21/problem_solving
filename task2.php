@@ -1,55 +1,57 @@
 <?php
-function countConnectedComponents($A, $B) {
-    $graph = [];
-    for ($i = 0; $i < count($B); $i++) {
-        $u = $B[$i][0];
-        $v = $B[$i][1];
-        if (!isset($graph[$u])) {
-            $graph[$u] = [];
-        }
-        if (!isset($graph[$v])) {
-            $graph[$v] = [];
-        }
-        $graph[$u][] = $v;
-        $graph[$v][] = $u;
+function countPathsWithGoodNodes($A, $B, $C) {
+    $N = count($A);
+    $graph = array_fill(1, $N, []);
+    
+    foreach ($B as $edge) {
+        $graph[$edge[0]][] = $edge[1];
+        $graph[$edge[1]][] = $edge[0];
     }
 
-    $visited = array_fill(1, $A, false);
-    $connectedComponents = 0;
-
-    function dfs($node, &$visited, $graph) {
-        $stack = [$node];
-        while (!empty($stack)) {
-            $curr = array_pop($stack);
-            if (isset($graph[$curr])) {
-                foreach ($graph[$curr] as $neighbor) {
-                    if (!$visited[$neighbor]) {
-                        $visited[$neighbor] = true;
-                        $stack[] = $neighbor;
-                    }
-                }
-            }
-        }
-    }
-
-    for ($i = 1; $i <= $A; $i++) {
-        if (!$visited[$i]) { 
-            $connectedComponents++;
-            $visited[$i] = true;
-            dfs($i, $visited, $graph);
-        }
-    }
-
-    return $connectedComponents;
+    $visited = array_fill(1, $N, false);
+    return dfs(1, $A, $C, 0, $visited, $graph);
 }
 
-$A1 = 4;
-$B1 = [[1, 2], [2, 3]];
-echo countConnectedComponents($A1, $B1) . "\n";
+function dfs($node, $A, $C, $goodCount, &$visited, $graph) {
+    $visited[$node] = true;
 
+    if ($A[$node - 1] == 1) {
+        $goodCount++;
+    }
 
+    if ($goodCount > $C) {
+        $visited[$node] = false;
+        return 0;
+    }
 
+    $isLeaf = true;
+    $totalPaths = 0;
 
+    foreach ($graph[$node] as $neighbor) {
+        if (!$visited[$neighbor]) {
+            $isLeaf = false;
+            $totalPaths += dfs($neighbor, $A, $C, $goodCount, $visited, $graph);
+        }
+    }
 
-// Time Complexity: O(A+∣B∣) where A is the number of nodes and ∣B∣ is the number of edges. This is because we visit each node and each edge once.
-// Space Complexity: O(A+∣B∣) due to the adjacency list representation and the visited list. In the worst case, we could have all nodes and edges represented in our structures.
+    if ($isLeaf) {
+        $totalPaths = 1;
+    }
+
+    $visited[$node] = false;
+    return $totalPaths;
+}
+
+$A = [0, 1, 0, 1, 1, 1];
+$B = [[1, 2], [1, 5], [1, 6], [2, 3], [2, 4]];
+$C = 1;
+
+echo countPathsWithGoodNodes($A, $B, $C);
+
+echo "\n";
+
+$A = [0, 1, 0, 1, 1, 1];
+$B = [ [1, 2], [1, 5], [1, 6], [2, 3], [2, 4] ];
+$C = 2;
+
+echo countPathsWithGoodNodes($A, $B, $C);
