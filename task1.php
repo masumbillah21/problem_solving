@@ -46,3 +46,7 @@ echo "\n";
 $A = 5;
 $B = [ [1, 2], [2, 3], [3, 4], [4, 5] ];
 echo hasCycle($A, $B);
+
+
+// Time Complexity: O(V+E) where V is the number of vertices and E is the number of edges.
+// Space Complexity: O(V+E)

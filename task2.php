@@ -55,3 +55,6 @@ $B = [ [1, 2], [1, 5], [1, 6], [2, 3], [2, 4] ];
 $C = 2;
 
 echo countPathsWithGoodNodes($A, $B, $C);
+
+// Time Complexity: O(V) where V is the number of vertices.
+// Space Complexity: O(V)
